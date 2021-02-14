@@ -7,6 +7,8 @@ import org.kodluyoruz.mybank.Account.SavingAccount.SavingAccount;
 import org.kodluyoruz.mybank.Customer.Customer;
 import org.kodluyoruz.mybank.Customer.CustomerDao;
 import org.kodluyoruz.mybank.Customer.CustomerService;
+import org.kodluyoruz.mybank.Recipient.Recipient;
+import org.kodluyoruz.mybank.Recipient.RecipientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class TransactionController {
     private CustomerService customerService;
     @Autowired
     private AccountServiceImpl accountServiceImpl;
+    @Autowired
+    RecipientService recipientService;
 
     @PostMapping( "/{id}/betweenAccounts")
     public void betweenAccountsPost(
@@ -40,5 +44,15 @@ public class TransactionController {
 
     ) throws Exception {
         transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount,transferType );
+    }
+    @PostMapping("/toSomeoneElse")
+    public void toSomeoneElsePost(@RequestParam("recipientName") String recipientName,
+                                  @RequestParam("accountType") String accountType,
+                                  @RequestParam("amount") double amount,
+                                  @RequestParam("transferFrom") long transferFrom)throws Exception {
+
+        Recipient recipient = recipientService.findRecipientByName(recipientName);
+        transactionService.toSomeoneElseTransfer(recipient, accountType, amount, transferFrom);
+
     }
 }

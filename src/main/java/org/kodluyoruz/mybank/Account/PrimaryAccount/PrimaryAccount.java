@@ -27,8 +27,6 @@ public class PrimaryAccount {
     private Currency currency;
     @OneToOne(mappedBy = "primaryAccount")
     private Customer customer;
-    @OneToOne(mappedBy = "primaryAccountId")
-    private BankCard bankCard;
 
    public enum Currency{
        USD,

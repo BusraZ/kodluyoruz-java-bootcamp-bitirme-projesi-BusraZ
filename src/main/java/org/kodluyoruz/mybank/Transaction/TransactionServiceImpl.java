@@ -142,41 +142,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    @Override
-    public List<Recipient> findRecipientList(Long id) {
-        Customer customer = customerService.get(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer not found with id: " + id));
-        String username =customer.getName();
-        List<Recipient> recipientList = recipientRepository.findAll().stream()
-                .filter(recipient -> username.equals(recipient.getCustomer().getName()))
-                .collect(Collectors.toList());
-
-        return recipientList;
-    }
 
     @Override
-    public Recipient saveRecipient(Recipient recipient) {
-        return recipientRepository.save(recipient);
-    }
-
-    @Override
-    public Recipient findRecipientByName(String recipientName) {
-        return recipientRepository.findByName(recipientName);
-    }
-
-    @Override
-    public void deleteRecipientByName(String recipientName) {
-        recipientRepository.deleteByName(recipientName);
-    }
-
-    @Override
-    public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount) throws Exception{
+    public void toSomeoneElseTransfer(Recipient recipient, String accountType, double amount, long transferFrom) throws Exception{
         if (accountType.equalsIgnoreCase("Primary")) {
+            PrimaryAccount primaryAccount= primaryAccountDao.findByIban(transferFrom);
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             primaryAccountDao.save(primaryAccount);
 
             Date date = new Date();
 
-            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Transfer to recipient " + recipient.getName(), "Transfer", "Finished", Double.parseDouble(amount), primaryAccount.getAccountBalance(), primaryAccount);
+            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Transfer to recipient " + recipient.getName(), "Transfer", "Finished",amount, primaryAccount.getAccountBalance(), primaryAccount);
             primaryTransactionDao.save(primaryTransaction);
         } else {
             throw new Exception(" Transfer must make with Primary Account");

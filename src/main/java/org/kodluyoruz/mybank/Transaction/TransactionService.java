@@ -22,13 +22,7 @@ public interface TransactionService {
 
     void betweenAccountsTransfer (long transferFrom, long transferTo, String amount,String TransferType) throws Exception ;
 
-   List<Recipient> findRecipientList(Long id);
 
-    Recipient saveRecipient(Recipient recipient);
 
-    Recipient findRecipientByName(String recipientName);
-
-    void deleteRecipientByName(String recipientName);
-
-    void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount) throws Exception;
+    void toSomeoneElseTransfer(Recipient recipient, String accountType, double amount, long transferFrom) throws Exception;
 }

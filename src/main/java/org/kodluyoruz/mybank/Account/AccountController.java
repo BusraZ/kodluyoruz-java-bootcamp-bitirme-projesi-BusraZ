@@ -19,37 +19,14 @@ import javax.validation.Valid;
 public class AccountController {
     private final AccountServiceImpl accountServiceImpl;
 
-   /* private CustomerService customerService;
-
-private PrimaryAccountDao primaryAccountDao;
-private SavingAccountDao savingAccountDao;
-    private AccountService accountService;
-    private CustomerDao customerDao;  */
-
- //   @Autowired
-  //  private TransactionService transactionService;
-
- /*   @RequestMapping(value = "/primaryaccount", method = RequestMethod.GET)
-    public String deposit(Model model) {
-        model.addAttribute("accountType", "");
-        model.addAttribute("amount", "");
-
-        return "deposit";
-    }
-
-    @RequestMapping(value = "/deposit", method = RequestMethod.POST)
-    public String depositPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal) {
-        accountService.deposit(accountType, Double.parseDouble(amount), principal);
-
-        return "redirect:/userFront";
-
-    } */
 
    @PostMapping("/{id}/new/primaryaccount")
     @ResponseStatus(HttpStatus.CREATED)
-    public PrimaryAccount  create(@PathVariable("id")Long id, @Valid @RequestBody PrimaryAccount primaryAccount , @RequestParam("currency") PrimaryAccount.Currency currency){
+    public PrimaryAccount  create(@PathVariable("id")Long id, @Valid @RequestBody PrimaryAccount primaryAccount ,
+                                  @RequestParam("currency") PrimaryAccount.Currency currency,
+                                  @RequestParam("CardType") String cardType){
 
-            return accountServiceImpl.createPrimaryAccount(id,primaryAccount,currency) ;
+            return accountServiceImpl.createPrimaryAccount(id,primaryAccount,currency,cardType) ;
      }
 
      @PostMapping("/{id}/new/savingaccount")

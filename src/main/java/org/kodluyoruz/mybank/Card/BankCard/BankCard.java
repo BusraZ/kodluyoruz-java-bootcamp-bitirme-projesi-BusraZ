@@ -18,18 +18,20 @@ public class BankCard {
     private long cardNumber;
     private LocalDate expDate;
     private int cvv;
+    private double amount;
     @OneToOne
-    @JoinColumn(name = "primaryAccountId",referencedColumnName = "id")
-    private PrimaryAccount primaryAccountId;
+    @JoinColumn(name = "accountNo",referencedColumnName = "accountNumber")
+    private PrimaryAccount accountNo;
     @OneToOne
     @JoinColumn(name = "customerId",referencedColumnName = "Id")
     private Customer customerId;
 
-    public BankCard(long cardNumber,LocalDate expDate,int cvv,PrimaryAccount primaryAccountId,Customer customerId){
+    public BankCard(long cardNumber,LocalDate expDate,int cvv,PrimaryAccount accountNo,Customer customerId,double amount){
         this.cardNumber=cardNumber;
         this.expDate=expDate;
         this.cvv=cvv;
-        this.primaryAccountId=primaryAccountId;
+        this.accountNo=accountNo;
+        this.amount=amount;
         this.customerId=customerId;
     }
 
