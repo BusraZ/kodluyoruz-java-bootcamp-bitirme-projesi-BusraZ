@@ -57,13 +57,12 @@ private SavingAccountDao savingAccountDao;
      public SavingAccount create(@PathVariable("id")Long id, @Valid @RequestBody SavingAccount savingAccount, @RequestParam("currency") SavingAccount.Currency currency){
        return accountServiceImpl.createSavingAccount(id,savingAccount,currency);
      }
-   @PostMapping("/{id}/deposit")
+   @PostMapping("/deposit")
     public void depositPOST(
            @RequestParam("iban") long iban,
-            @RequestParam("amount") String amount,
-            @RequestParam("accountType") String accountType
-   ) {
-        accountServiceImpl.deposit(accountType, Double.parseDouble(amount), iban);
+            @RequestParam("amount") double amount,
+            @RequestParam("accountType") String accountType) {
+        accountServiceImpl.deposit(accountType, amount, iban);
 
     }
 

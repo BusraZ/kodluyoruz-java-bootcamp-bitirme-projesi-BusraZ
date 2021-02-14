@@ -1,7 +1,7 @@
-package org.kodluyoruz.mybank.Transaction;
+package org.kodluyoruz.mybank.Transaction.PrimaryTransaction;
 
+import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

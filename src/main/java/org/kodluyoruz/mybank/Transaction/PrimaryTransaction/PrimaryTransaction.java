@@ -1,4 +1,4 @@
-package org.kodluyoruz.mybank.Transaction;
+package org.kodluyoruz.mybank.Transaction.PrimaryTransaction;
 
 import lombok.*;
 import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccount;

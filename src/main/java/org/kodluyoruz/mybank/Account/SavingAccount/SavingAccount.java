@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.kodluyoruz.mybank.Customer.Customer;
-import org.kodluyoruz.mybank.Transaction.SavingTransaction;
+import org.kodluyoruz.mybank.Transaction.SavingTransaction.SavingTransaction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -35,9 +35,9 @@ public class SavingAccount {
         EUR,
         TRY
     }
-  /* @OneToMany(mappedBy = "savingsAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   @OneToMany(mappedBy = "savingAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<SavingTransaction> savingsTransactionList; */
+    private List<SavingTransaction> savingTransactionList;
 
     /* public SavingAccountDto toSavingAccountDto(){
         return SavingAccountDto.builder().id(this.id).

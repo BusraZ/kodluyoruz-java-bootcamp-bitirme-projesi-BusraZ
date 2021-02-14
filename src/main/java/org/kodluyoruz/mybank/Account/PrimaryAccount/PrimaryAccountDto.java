@@ -2,11 +2,8 @@ package org.kodluyoruz.mybank.Account.PrimaryAccount;
 
 import lombok.Builder;
 import lombok.Data;
-import org.kodluyoruz.mybank.Customer.Customer;
-import org.kodluyoruz.mybank.Transaction.PrimaryTransaction;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @Builder

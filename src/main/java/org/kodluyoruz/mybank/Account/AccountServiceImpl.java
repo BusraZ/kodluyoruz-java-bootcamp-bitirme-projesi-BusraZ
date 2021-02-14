@@ -1,17 +1,17 @@
 package org.kodluyoruz.mybank.Account;
 
 
-import lombok.NoArgsConstructor;
 import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccount;
 import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccountDao;
-import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccountDto;
 import org.kodluyoruz.mybank.Account.SavingAccount.SavingAccount;
 import org.kodluyoruz.mybank.Account.SavingAccount.SavingAccountDao;
+import org.kodluyoruz.mybank.Card.BankCard.BankCard;
+import org.kodluyoruz.mybank.Card.CardService;
+import org.kodluyoruz.mybank.Card.CreditCard.CreditCard;
 import org.kodluyoruz.mybank.Customer.Customer;
-import org.kodluyoruz.mybank.Customer.CustomerDao;
 import org.kodluyoruz.mybank.Customer.CustomerService;
-import org.kodluyoruz.mybank.Transaction.PrimaryTransaction;
-import org.kodluyoruz.mybank.Transaction.SavingTransaction;
+import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
+import org.kodluyoruz.mybank.Transaction.SavingTransaction.SavingTransaction;
 import org.kodluyoruz.mybank.Transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,8 @@ import java.util.Date;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-
+@Autowired
+private CardService cardService;
    @Autowired
     private PrimaryAccountDao primaryAccountDao;
      @Autowired
@@ -37,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionService transactionService;
 
-    private static int nextAccountNumber = 10532671;
+    private static int nextAccountNumber = 1053264;
     private static long nextIban= 109326715;
     private int accountGen() {
         return ++nextAccountNumber;
@@ -56,9 +57,13 @@ public class AccountServiceImpl implements AccountService {
         primaryAccount.setIban(accountIbanGen());
         customer.setPrimaryAccount(primaryAccount);
         primaryAccount.setCurrency(currency);
-      primaryAccount.setCustomer(customer.toCustomerDto().toCustomer());
-
-        return primaryAccountDao.save( primaryAccount) ;
+        primaryAccount.setCustomer(customer.toCustomerDto().toCustomer());
+        primaryAccountDao.save( primaryAccount);
+       /* BankCard bankCard= new BankCard(cardService.cardNumber(),cardService.expDate(),cardService.cvv(),primaryAccount,customer);
+        cardService.saveBankCard(bankCard); */
+        CreditCard creditCard= new CreditCard(cardService.cardNumber(),cardService.expDate(),cardService.cvv(),primaryAccount,customer,cardService.credicardLimit());
+        cardService.saveCreditCard(creditCard);
+        return primaryAccountDao.findByAccountNumber(primaryAccount.getAccountNumber()) ;
     }
 
     @Override

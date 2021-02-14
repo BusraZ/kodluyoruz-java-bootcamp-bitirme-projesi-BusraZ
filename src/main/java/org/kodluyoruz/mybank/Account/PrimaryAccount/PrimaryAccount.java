@@ -2,8 +2,9 @@ package org.kodluyoruz.mybank.Account.PrimaryAccount;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.kodluyoruz.mybank.Card.BankCard.BankCard;
 import org.kodluyoruz.mybank.Customer.Customer;
-import org.kodluyoruz.mybank.Transaction.PrimaryTransaction;
+import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,7 +27,8 @@ public class PrimaryAccount {
     private Currency currency;
     @OneToOne(mappedBy = "primaryAccount")
     private Customer customer;
-
+    @OneToOne(mappedBy = "primaryAccountId")
+    private BankCard bankCard;
 
    public enum Currency{
        USD,

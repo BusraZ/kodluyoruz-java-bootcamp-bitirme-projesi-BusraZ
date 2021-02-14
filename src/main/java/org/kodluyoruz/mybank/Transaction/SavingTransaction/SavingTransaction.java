@@ -1,15 +1,14 @@
-package org.kodluyoruz.mybank.Transaction;
+package org.kodluyoruz.mybank.Transaction.SavingTransaction;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccount;
 import org.kodluyoruz.mybank.Account.SavingAccount.SavingAccount;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

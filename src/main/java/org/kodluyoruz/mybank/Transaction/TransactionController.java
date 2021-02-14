@@ -19,11 +19,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transfer")
-public class TransferController {
-  /*  @Autowired
-    private  RestTemplate restTemplate; */
+public class TransactionController {
 
-private static final String url= " https://api.exchangeratesapi.io/latest?base=TRY";
+
     @Autowired
     private TransactionService transactionService;
      @Autowired
@@ -41,9 +39,6 @@ private static final String url= " https://api.exchangeratesapi.io/latest?base=T
             @RequestParam("amount") String amount
 
     ) throws Exception {
-
-
         transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount,transferType );
-
     }
 }
