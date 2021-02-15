@@ -6,11 +6,17 @@ import org.kodluyoruz.mybank.Card.BankCard.BankCard;
 import org.kodluyoruz.mybank.Card.BankCard.BankCardRepository;
 import org.kodluyoruz.mybank.Card.CreditCard.CreditCard;
 import org.kodluyoruz.mybank.Card.CreditCard.CreditCardRepository;
+import org.kodluyoruz.mybank.Customer.Customer;
+import org.kodluyoruz.mybank.Customer.CustomerService;
+import org.kodluyoruz.mybank.Loan.Loan;
+import org.kodluyoruz.mybank.Loan.LoanRepository;
 import org.kodluyoruz.mybank.Recipient.Recipient;
 import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
 import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransactionDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,21 +31,23 @@ public class CardServiceImpl implements CardService{
     @Autowired
     CreditCardRepository creditCardRepository;
     @Autowired
-    PrimaryTransactionDao primaryTransactionDao;
+    LoanRepository loanRepository;
     @Autowired
     PrimaryAccountDao primaryAccountDao;
+    @Autowired
+    CustomerService customerService;
 
-    private static long cardnumber= 502007645;
-    private static long credicardnumber= 506207645;
+    private static long bankcardNumber= 502007645;
+    private static long cardNumber= 506207645;
     private static double credicardLimit= 1000;
     private static LocalDate expDate= LocalDate.of(2025,02,22);
     private static int cvv=183;
 
-    public long cardNumber(){
-        return ++cardnumber;
+    public long bankcardGen(){
+        return ++bankcardNumber;
     }
-    public long credicardNumber(){
-        return ++credicardnumber;
+    public long cardGen(){
+        return ++cardNumber;
     }
 
     @Override
@@ -66,18 +74,17 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public void crediCardPayment(Recipient recipient,  double amount, long cardNumber) {
-
-           CreditCard creditCard = creditCardRepository.findByCardNumber(cardNumber);
+         // Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));
+    //    CreditCard creditCard=  customer.getCreditCard();
+          CreditCard creditCard= creditCardRepository.findByNumber(cardNumber);
            creditCard.setCredicardLimit(creditCard.getCredicardLimit().subtract(new BigDecimal(amount)));
            creditCardRepository.save(creditCard);
 
-        int a= creditCard.getAccountNo().getAccountNumber();
-        PrimaryAccount primaryAccount = primaryAccountDao.findByAccountNumber(a);
-        primaryAccountDao.save(primaryAccount);
            Date date = new Date();
 
-           PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Transfer to recipient " + recipient.getName(), "Transfer", "Finished", amount, creditCard.getCredicardLimit(),primaryAccount);
-           primaryTransactionDao.save(primaryTransaction);
+          Loan loan= new Loan(date, "CreditCard Payment " + recipient.getName(),  "Finished",amount,creditCard.getCredicardLimit(), creditCard);
+          loan.setSumLoan(loan.getSumLoan().add(new BigDecimal(amount)));
+        loanRepository.save(loan);
 
     }
 

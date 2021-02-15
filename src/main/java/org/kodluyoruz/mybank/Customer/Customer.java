@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.kodluyoruz.mybank.Account.PrimaryAccount.PrimaryAccount;
 import org.kodluyoruz.mybank.Account.SavingAccount.SavingAccount;
 import org.kodluyoruz.mybank.Card.BankCard.BankCard;
+import org.kodluyoruz.mybank.Card.CreditCard.CreditCard;
 import org.kodluyoruz.mybank.Recipient.Recipient;
 
 import javax.persistence.*;
@@ -32,6 +33,8 @@ public class Customer {
     @JoinColumn(name = "primary_account_id", referencedColumnName = "Id")
     private PrimaryAccount primaryAccount;
 
+    @OneToOne(mappedBy = "customerId")
+    private CreditCard creditCard;
 
     @OneToOne
     @JoinColumn(name="saving_account_id", referencedColumnName = "Id")

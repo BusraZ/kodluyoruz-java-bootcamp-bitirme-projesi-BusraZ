@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface AccountService{
 
-       PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,String cardType);
+       PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,PrimaryAccount.Card cardType);
         PrimaryAccount deletePrimaryAccount();
 
         SavingAccount createSavingAccount(Long id, SavingAccount savingAccount, SavingAccount.Currency currency);

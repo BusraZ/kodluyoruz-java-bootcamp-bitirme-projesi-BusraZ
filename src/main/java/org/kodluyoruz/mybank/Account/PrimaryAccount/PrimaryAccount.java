@@ -33,6 +33,10 @@ public class PrimaryAccount {
        EUR,
         TRY
     }
+    public enum Card{
+        Bank,
+        Credit
+    }
     @OneToMany(mappedBy = "primaryAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<PrimaryTransaction> primaryTransactionList;

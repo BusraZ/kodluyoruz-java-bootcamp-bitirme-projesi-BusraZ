@@ -8,15 +8,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface CardService {
-   long cardNumber();
-   long credicardNumber();
+   long bankcardGen();
+   long cardGen();
    BigDecimal credicardLimit();
    LocalDate expDate();
    int cvv();
    void saveBankCard(BankCard bankCard);
    void saveCreditCard(CreditCard creditCard);
 
-  void crediCardPayment(Recipient recipient, double amount, long cardnumber);
+  void crediCardPayment(Recipient recipient, double amount,long number);
 
   // void saveSavingDepositTransaction(SavingTransaction savingsTransaction);
 }

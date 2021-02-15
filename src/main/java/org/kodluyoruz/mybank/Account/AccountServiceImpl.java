@@ -49,7 +49,7 @@ private CardService cardService;
  /*   @Autowired
     private TransactionService transactionService; */
     @Override
-    public PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,String cardType) {
+    public PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,PrimaryAccount.Card cardType) {
  Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));
         primaryAccount = new PrimaryAccount();
         primaryAccount.setAccountBalance(new BigDecimal(0.0));
@@ -59,11 +59,11 @@ private CardService cardService;
         primaryAccount.setCurrency(currency);
         primaryAccount.setCustomer(customer.toCustomerDto().toCustomer());
         primaryAccountDao.save( primaryAccount);
-        if (cardType.equalsIgnoreCase("Bank")) {
-        BankCard bankCard= new BankCard(cardService.cardNumber(),cardService.expDate(),cardService.cvv(),primaryAccount,customer,0);
+        if (cardType.toString().equalsIgnoreCase("Bank")) {
+        BankCard bankCard= new BankCard(cardService.bankcardGen(),cardService.expDate(),cardService.cvv(),primaryAccount,customer,0);
         cardService.saveBankCard(bankCard);
-        }else if (cardType.equalsIgnoreCase("Credit")) {
-        CreditCard creditCard= new CreditCard(cardService.cardNumber(),cardService.expDate(),cardService.cvv(),primaryAccount,customer,cardService.credicardLimit());
+        }else if (cardType.toString().equalsIgnoreCase("Credit")) {
+        CreditCard creditCard= new CreditCard(cardService.cardGen(),cardService.expDate(),cardService.cvv(),primaryAccount,customer,cardService.credicardLimit());
         cardService.saveCreditCard(creditCard);}
         return primaryAccountDao.findByAccountNumber(primaryAccount.getAccountNumber()) ;
     }

@@ -20,7 +20,7 @@ public class CardController {
     @PostMapping("/crediCardPayment")
     public void toSomeoneElsePost(@RequestParam("recipientName") String recipientName,
                                   @RequestParam("amount") double amount,
-                                  @RequestParam("transferFrom") long cardnumber) {
+                                  @RequestParam("customer") long cardnumber) {
 
         Recipient recipient = recipientService.findRecipientByName(recipientName);
        cardService.crediCardPayment(recipient, amount, cardnumber);

@@ -24,9 +24,9 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public PrimaryAccount  create(@PathVariable("id")Long id, @Valid @RequestBody PrimaryAccount primaryAccount ,
                                   @RequestParam("currency") PrimaryAccount.Currency currency,
-                                  @RequestParam("CardType") String cardType){
+                                  @RequestParam("CardType") PrimaryAccount.Card card){
 
-            return accountServiceImpl.createPrimaryAccount(id,primaryAccount,currency,cardType) ;
+            return accountServiceImpl.createPrimaryAccount(id,primaryAccount,currency,card) ;
      }
 
      @PostMapping("/{id}/new/savingaccount")
