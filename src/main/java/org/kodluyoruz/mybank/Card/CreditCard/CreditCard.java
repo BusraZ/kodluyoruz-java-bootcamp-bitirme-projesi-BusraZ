@@ -32,9 +32,9 @@ public class CreditCard {
     @JoinColumn(name = "customerId",referencedColumnName = "Id")
     private Customer customerId;
 
-   /* @OneToMany(mappedBy = "creditcard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    /*@OneToMany(mappedBy = "creditcard")
     @JsonIgnore
-    private List<Loan> loanList; */
+    private List<Loan> loanList;*/
 
     public CreditCard(long cardNumber,LocalDate expDate,int cvv,PrimaryAccount accountNo,Customer customerId,BigDecimal credicardLimit){
         this.number=cardNumber;

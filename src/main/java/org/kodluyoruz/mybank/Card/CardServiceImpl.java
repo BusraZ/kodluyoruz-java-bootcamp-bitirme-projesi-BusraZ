@@ -9,6 +9,7 @@ import org.kodluyoruz.mybank.Card.CreditCard.CreditCardRepository;
 import org.kodluyoruz.mybank.Customer.Customer;
 import org.kodluyoruz.mybank.Customer.CustomerService;
 import org.kodluyoruz.mybank.Loan.Loan;
+import org.kodluyoruz.mybank.Loan.LoanCheck;
 import org.kodluyoruz.mybank.Loan.LoanRepository;
 import org.kodluyoruz.mybank.Recipient.Recipient;
 import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
@@ -21,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -63,28 +66,61 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public void saveBankCard(BankCard bankCard) {
-        bankCardRepository.save(bankCard);
+    public BankCard saveBankCard(BankCard bankCard) {
+       return bankCardRepository.save(bankCard);
     }
 
     @Override
-    public void saveCreditCard(CreditCard creditCard) {
-        creditCardRepository.save(creditCard);
+    public BankCard createBankCard(Long id) {
+        Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));
+        PrimaryAccount primaryAccount1= customer.getPrimaryAccount();
+        BankCard bankCard= new BankCard();
+        bankCard.setCustomerId(customer);
+        bankCard.setCvv(cvv());
+       bankCard.setExpDate(expDate());
+        bankCard.setNumber(cardGen());
+        bankCard.setAccountNo(primaryAccount1);
+        return bankCardRepository.save(bankCard);
+    }
+
+    @Override
+    public CreditCard createCreditCard(Long id) {
+        Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));
+        PrimaryAccount primaryAccount1= customer.getPrimaryAccount();
+        CreditCard creditCard=new CreditCard();
+        creditCard.setCustomerId(customer);
+        creditCard.setCvv(cvv());
+        creditCard.setCredicardLimit(credicardLimit());
+        creditCard.setExpDate(expDate());
+        creditCard.setNumber(cardGen());
+        creditCard.setAccountNo(primaryAccount1);
+       return creditCardRepository.save(creditCard);
+    }
+
+    @Override
+    public CreditCard saveCreditCard(CreditCard creditCard) {
+        return creditCardRepository.save(creditCard);
     }
 
     @Override
     public void crediCardPayment(Recipient recipient,  double amount, long cardNumber) {
-         // Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));
-    //    CreditCard creditCard=  customer.getCreditCard();
-          CreditCard creditCard= creditCardRepository.findByNumber(cardNumber);
-           creditCard.setCredicardLimit(creditCard.getCredicardLimit().subtract(new BigDecimal(amount)));
-           creditCardRepository.save(creditCard);
 
-           Date date = new Date();
+            CreditCard creditCard= creditCardRepository.findByNumber(cardNumber);
 
-          Loan loan= new Loan(date, "CreditCard Payment " + recipient.getName(),  "Finished",amount,creditCard.getCredicardLimit(), creditCard);
-          loan.setSumLoan(loan.getSumLoan().add(new BigDecimal(amount)));
-        loanRepository.save(loan);
+              creditCard.setCredicardLimit(creditCard.getCredicardLimit().subtract(new BigDecimal(amount)));
+              creditCardRepository.save(creditCard);
+              Date date = new Date();
+
+              Loan  loan= new Loan(date, "CreditCard Payment " + recipient.getName(),  "Finished",amount,(new BigDecimal(1000).subtract(creditCard.getCredicardLimit())), creditCard);
+
+
+              loanRepository.save(loan);
+
+
+
+
+
+
 
     }
 

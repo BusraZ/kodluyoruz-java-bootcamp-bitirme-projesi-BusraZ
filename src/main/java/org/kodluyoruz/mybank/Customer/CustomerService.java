@@ -8,7 +8,7 @@ public interface CustomerService {
     Customer create(Customer customer);
 Customer findByName(String  name);
     Customer update(Long id,Customer customer);
-    void delete(Long id);
+    void deleteCustomerById(Long id);
     Optional<Customer> get(Long id);
     Customer findByPrimaryAccount_Iban(long iban);
     Customer findBySavingAccount_Iban(long iban);

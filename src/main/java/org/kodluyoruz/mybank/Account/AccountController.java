@@ -47,8 +47,12 @@ public class AccountController {
     public void withdrawPOST(
             @RequestParam("iban") long iban,
             @RequestParam("amount") String amount,
-            @RequestParam("accountType") String accountType) {
-        accountServiceImpl.withdraw(accountType, Double.parseDouble(amount), iban);
+            @RequestParam("accountType") String accountType)throws Exception {
+        accountServiceImpl.withdraw(accountType, Double.parseDouble(amount), iban) ;
 
     }
+    @DeleteMapping("/primaryAccount/{id}")
+    public void delete(@PathVariable(value = "id") Long id)throws Exception {
+        accountServiceImpl.deletePrimaryAccount(id);
+        }
 }

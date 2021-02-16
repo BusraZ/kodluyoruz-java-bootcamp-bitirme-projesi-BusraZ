@@ -90,71 +90,83 @@ public class TransactionServiceImpl implements TransactionService {
 
     public void betweenAccountsTransfer(long transferFrom, long transferTo, String amount,String transferType) throws Exception {
 
-        if(transferType.equalsIgnoreCase("Primary")){
-            PrimaryAccount primaryAccount= primaryAccountDao.findByIban(transferFrom);
-            SavingAccount  savingAccount = savingAccountDao.findByIban(transferTo);
+        if (transferType.equalsIgnoreCase("Primary")) {
+            PrimaryAccount primaryAccount = primaryAccountDao.findByIban(transferFrom);
+            SavingAccount savingAccount = savingAccountDao.findByIban(transferTo);
             PrimaryAccount.Currency currencyfrom = primaryAccount.getCurrency();
             SavingAccount.Currency currencyto = savingAccount.getCurrency();
-          if(currencyto.toString().equalsIgnoreCase(currencyfrom.toString())==false) {
-              CurrencyRate result = restTemplate.getForObject("/latest?base={currencyfrom}", CurrencyRate.class, currencyfrom.toString());
-              Double rate = result.getRates().get(currencyto.toString());
-              double amount1 = Double.parseDouble(amount);
-              double amount2 = amount1 * rate;
-              savingAccount.setAccountBalance(savingAccount.getAccountBalance().add(new BigDecimal(amount2)));
-               }
-          else {
-              savingAccount.setAccountBalance(savingAccount.getAccountBalance().add(new BigDecimal(amount)));
-              }
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            primaryAccountDao.save(primaryAccount);
-            savingAccountDao.save(savingAccount);
-            Date date = new Date();
+            if (primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount)) >= 0) {
+                if (currencyto.toString().equalsIgnoreCase(currencyfrom.toString()) == false) {
+                    CurrencyRate result = restTemplate.getForObject("/latest?base={currencyfrom}", CurrencyRate.class, currencyfrom.toString());
+                    Double rate = result.getRates().get(currencyto.toString());
+                    double amount1 = Double.parseDouble(amount);
+                    double amount2 = amount1 * rate;
+                    savingAccount.setAccountBalance(savingAccount.getAccountBalance().add(new BigDecimal(amount2)));
+                } else {
+                    savingAccount.setAccountBalance(savingAccount.getAccountBalance().add(new BigDecimal(amount)));
+                }
+                primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+                primaryAccountDao.save(primaryAccount);
+                savingAccountDao.save(savingAccount);
+                Date date = new Date();
 
-            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Between account transfer from "+ transferFrom +" to " + transferTo , "Account", "Finished", Double.parseDouble(amount), primaryAccount.getAccountBalance(), primaryAccount);
-            primaryTransactionDao.save(primaryTransaction);
-       } else if (transferType.equalsIgnoreCase("Saving")) {
-            SavingAccount  savingAccount = savingAccountDao.findByIban(transferFrom);
-            PrimaryAccount primaryAccount= primaryAccountDao.findByIban(transferTo);
+                PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Between account transfer from " + transferFrom + " to " + transferTo, "Account", "Finished", Double.parseDouble(amount), primaryAccount.getAccountBalance(), primaryAccount);
+                primaryTransactionDao.save(primaryTransaction);
+            } else {
+                throw new Exception("Not enough balance");
+            }
+        } else if (transferType.equalsIgnoreCase("Saving")) {
+            SavingAccount savingAccount = savingAccountDao.findByIban(transferFrom);
+            PrimaryAccount primaryAccount = primaryAccountDao.findByIban(transferTo);
             PrimaryAccount.Currency currencyto = primaryAccount.getCurrency();
-            SavingAccount.Currency  currencyfrom  = savingAccount.getCurrency();
-            if(currencyto.toString().equalsIgnoreCase(currencyfrom.toString())==false) {
-                CurrencyRate result = restTemplate.getForObject("/latest?base={currencyfrom}", CurrencyRate.class, currencyfrom);
-                Double rate = result.getRates().get(currencyto.toString());
-                double amount1 = Double.parseDouble(amount);
-                double amount2 = amount1 * rate;
-                primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount2)));
-            }
+            SavingAccount.Currency currencyfrom = savingAccount.getCurrency();
+            if (savingAccount.getAccountBalance().compareTo(new BigDecimal(amount)) >= 0) {
+                if (currencyto.toString().equalsIgnoreCase(currencyfrom.toString()) == false) {
+                    CurrencyRate result = restTemplate.getForObject("/latest?base={currencyfrom}", CurrencyRate.class, currencyfrom);
+                    Double rate = result.getRates().get(currencyto.toString());
+                    double amount1 = Double.parseDouble(amount);
+                    double amount2 = amount1 * rate;
+                    primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount2)));
+                } else {
+                    primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
+                   }
+
+                savingAccount.setAccountBalance(savingAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+                primaryAccountDao.save(primaryAccount);
+                savingAccountDao.save(savingAccount);
+
+                Date date = new Date();
+
+                SavingTransaction savingTransaction = new SavingTransaction(date, "Between account transfer from " + transferFrom + " to " + transferTo, "Transfer", "Finished", Double.parseDouble(amount), savingAccount.getAccountBalance(), savingAccount);
+                savingTransactionDao.save(savingTransaction);
+               }
             else {
-                primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
-            }
+                throw new Exception("Invalid Transfer");
+                }
 
-            savingAccount.setAccountBalance(savingAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            primaryAccountDao.save(primaryAccount);
-            savingAccountDao.save(savingAccount);
-
-            Date date = new Date();
-
-            SavingTransaction savingTransaction = new SavingTransaction(date, "Between account transfer from " + transferFrom + " to " + transferTo , "Transfer", "Finished", Double.parseDouble(amount), savingAccount.getAccountBalance(), savingAccount);
-            savingTransactionDao.save(savingTransaction);
-        } else {
-            throw new Exception("Invalid Transfer");
-       }
-
+        }
     }
 
 
     @Override
     public void toSomeoneElseTransfer(Recipient recipient, String accountType, double amount, long transferFrom) throws Exception{
         if (accountType.equalsIgnoreCase("Primary")) {
-            PrimaryAccount primaryAccount= primaryAccountDao.findByIban(transferFrom);
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            primaryAccountDao.save(primaryAccount);
+            PrimaryAccount primaryAccount = primaryAccountDao.findByIban(transferFrom);
+            if (primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount)) >= 0) {
+                primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+                primaryAccountDao.save(primaryAccount);
 
-            Date date = new Date();
+                Date date = new Date();
 
-            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Transfer to recipient " + recipient.getName(), "Transfer", "Finished",amount, primaryAccount.getAccountBalance(), primaryAccount);
-            primaryTransactionDao.save(primaryTransaction);
-        } else {
+                PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Transfer to recipient " + recipient.getName(), "Transfer", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+                primaryTransactionDao.save(primaryTransaction);
+            }
+            else {
+                       throw new Exception("Not enough balance");
+                  }
+          }
+
+        else {
             throw new Exception(" Transfer must make with Primary Account");
          }
     }

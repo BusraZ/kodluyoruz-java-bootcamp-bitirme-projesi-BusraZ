@@ -13,8 +13,10 @@ public interface CardService {
    BigDecimal credicardLimit();
    LocalDate expDate();
    int cvv();
-   void saveBankCard(BankCard bankCard);
-   void saveCreditCard(CreditCard creditCard);
+   BankCard saveBankCard(BankCard bankCard);
+   BankCard createBankCard(Long id);
+   CreditCard createCreditCard(Long id);
+   CreditCard saveCreditCard(CreditCard creditCard);
 
   void crediCardPayment(Recipient recipient, double amount,long number);
 

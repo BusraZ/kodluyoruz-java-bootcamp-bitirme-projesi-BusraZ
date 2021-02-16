@@ -1,5 +1,7 @@
 package org.kodluyoruz.mybank.Loan;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Loan {
 
@@ -23,18 +26,19 @@ public class Loan {
         private String description;
         private String status;
         private double amount;
-        private BigDecimal sumLoan= new BigDecimal(0);
+        private BigDecimal sumLoan;
         private BigDecimal availableBalance;
         @ManyToOne
         @JoinColumn(name = "creditcard",referencedColumnName = "id")
+        @JsonIgnore
         private CreditCard creditCard;
 
-    public Loan(Date date, String description, String status, double amount,BigDecimal availableBalance, CreditCard creditCard) {
+    public Loan(Date date, String description, String status, double amount,BigDecimal sumLoan, CreditCard creditCard) {
         this.date = date;
         this.description = description;
         this.status = status;
         this.amount = amount;
-        this.availableBalance=availableBalance;
+        this.sumLoan=sumLoan;
         this.creditCard=creditCard;
     }
 

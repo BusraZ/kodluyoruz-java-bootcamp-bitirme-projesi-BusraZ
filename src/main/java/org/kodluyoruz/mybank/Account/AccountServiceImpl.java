@@ -77,8 +77,15 @@ private CardService cardService;
     }
 
     @Override
-    public PrimaryAccount deletePrimaryAccount() {
-        return null;
+    public void deletePrimaryAccount(Long id)throws Exception {
+        PrimaryAccount primaryAccount= primaryAccountDao.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found with id : " + id));;
+      if(primaryAccount.getAccountBalance().equals(0)){
+          this.primaryAccountDao.deleteById(id);
+      }
+      else {
+          throw new Exception("AccountBalance is not empty");
+      }
+
     }
 
     @Override
@@ -97,11 +104,16 @@ private CardService cardService;
     }
 
     @Override
-    public SavingAccount deleteSavingAccount() {
-        return null;
+    public void deleteSavingAccount(Long id) throws Exception{
+      SavingAccount savingAccount=savingAccountDao.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found with id : " + id));;
+        if(savingAccount.getAccountBalance().equals(0)){
+            this.savingAccountDao.deleteById(id);
+         }
+        else {
+            throw new Exception("AccountBalance is not empty");
+        }
+
     }
-
-
 
     public void deposit(String accountType, double amount, long iban) {
 
@@ -126,26 +138,37 @@ private CardService cardService;
         }
     }
 
-    public void withdraw(String accountType, double amount, long iban) {
+    public void withdraw(String accountType, double amount, long iban) throws Exception {
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount= primaryAccountDao.findByIban(iban);
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
-            primaryAccountDao.save(primaryAccount);
+          if(primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount)) >=0 ) {
+              primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+              primaryAccountDao.save(primaryAccount);
 
 
-            Date date = new Date();
+              Date date = new Date();
 
-            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
-         transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
+              PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+              transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
+          }
+          else {
+              throw new Exception("Not enough balance");
+           }
+
         } else if (accountType.equalsIgnoreCase("Saving")) {
             SavingAccount  savingAccount = savingAccountDao.findByIban(iban);
+            if(savingAccount.getAccountBalance().compareTo(new BigDecimal(amount))>=0){
             savingAccount.setAccountBalance(savingAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             savingAccountDao.save(savingAccount);
 
             Date date = new Date();
            SavingTransaction savingsTransaction = new SavingTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingAccount.getAccountBalance(), savingAccount);
            transactionService.saveSavingWithdrawTransaction(savingsTransaction);
+            }
+            else{
+                throw new Exception("Not enough balance");
+            }
         }
     }
 

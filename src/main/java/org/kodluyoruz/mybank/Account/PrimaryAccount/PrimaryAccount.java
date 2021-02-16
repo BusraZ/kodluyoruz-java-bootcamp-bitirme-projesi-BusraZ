@@ -3,6 +3,7 @@ package org.kodluyoruz.mybank.Account.PrimaryAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.kodluyoruz.mybank.Card.BankCard.BankCard;
+import org.kodluyoruz.mybank.Card.CreditCard.CreditCard;
 import org.kodluyoruz.mybank.Customer.Customer;
 import org.kodluyoruz.mybank.Transaction.PrimaryTransaction.PrimaryTransaction;
 
@@ -27,7 +28,10 @@ public class PrimaryAccount {
     private Currency currency;
     @OneToOne(mappedBy = "primaryAccount")
     private Customer customer;
-
+    @OneToOne(mappedBy = "accountNo")
+    CreditCard creditCard;
+    @OneToOne(mappedBy = "accountNo")
+    BankCard bankCard;
    public enum Currency{
        USD,
        EUR,

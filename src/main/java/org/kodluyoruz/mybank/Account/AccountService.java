@@ -12,15 +12,15 @@ import java.util.Optional;
 public interface AccountService{
 
        PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,PrimaryAccount.Card cardType);
-        PrimaryAccount deletePrimaryAccount();
+        void deletePrimaryAccount(Long id)throws Exception;
 
         SavingAccount createSavingAccount(Long id, SavingAccount savingAccount, SavingAccount.Currency currency);
-        SavingAccount deleteSavingAccount();
+        void deleteSavingAccount(Long id) throws Exception;
 
         PrimaryAccount getPrimaryAccount(long iban);
         SavingAccount getSavingAccount(long iban);
 
         void deposit(String accountType, double amount, long iban );
 
-        void withdraw(String accountType, double amount, long iban);
+        void withdraw(String accountType, double amount, long iban)throws Exception;
 }

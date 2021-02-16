@@ -28,7 +28,7 @@ public class CustomerController {
 
         return customerService.create(customerDto.toCustomer()).toCustomerDto();
     }
-    @GetMapping("/{id}")
+    @GetMapping("/customer/{id}")
     public CustomerDto get(@PathVariable("id") Long id) {
         return customerService.get(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id)).toCustomerDto();
@@ -38,9 +38,9 @@ public class CustomerController {
         return customerService.update(id,customerDto.toCustomer()).toCustomerDto();
     }
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id) {
+   public void delete(@PathVariable(value = "id") Long id) {
 
-        customerService.delete(id);
+        customerService.deleteCustomerById(id);
     }
 
 }

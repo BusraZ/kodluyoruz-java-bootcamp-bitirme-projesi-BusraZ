@@ -11,7 +11,6 @@ import org.kodluyoruz.mybank.Card.CreditCard.CreditCard;
 import org.kodluyoruz.mybank.Recipient.Recipient;
 
 import javax.persistence.*;
-import java.util.Currency;
 import java.util.List;
 
 @Builder
@@ -29,18 +28,22 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recipient> recipientList;
-    @OneToOne
+
+    @OneToOne(cascade ={CascadeType.DETACH,CascadeType.REMOVE})
     @JoinColumn(name = "primary_account_id", referencedColumnName = "Id")
     private PrimaryAccount primaryAccount;
 
-    @OneToOne(mappedBy = "customerId")
+    @OneToOne(mappedBy = "customerId",cascade ={CascadeType.DETACH,CascadeType.REMOVE})
     private CreditCard creditCard;
 
-    @OneToOne
+    @OneToOne(mappedBy = "customerId",cascade ={CascadeType.DETACH,CascadeType.REMOVE})
+    private BankCard bankCard;
+
+    @OneToOne(cascade ={CascadeType.DETACH,CascadeType.REMOVE})
     @JoinColumn(name="saving_account_id", referencedColumnName = "Id")
     private SavingAccount savingAccount;
 
-    private boolean enabled = true;
+
      public CustomerDto toCustomerDto(){
          return CustomerDto.builder().Id(this.Id).name(this.name).surname(this.surname).
                  build();
