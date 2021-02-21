@@ -34,20 +34,19 @@ private CardService cardService;
 
     @Autowired
     private CustomerService customerService;
- //   private CustomerDao customerDao;
+
     @Autowired
     private TransactionService transactionService;
 
-    private static int nextAccountNumber = 1053264;
-    private static long nextIban= 109326715;
+    private static int nextAccountNumber = 1053224;
+    private static long nextIban= 109323715;
     private int accountGen() {
         return ++nextAccountNumber;
     }
     private long accountIbanGen() {
         return ++nextIban;
     }
- /*   @Autowired
-    private TransactionService transactionService; */
+
     @Override
     public PrimaryAccount createPrimaryAccount(Long id, PrimaryAccount primaryAccount, PrimaryAccount.Currency currency,PrimaryAccount.Card cardType) {
  Customer customer= customerService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id));

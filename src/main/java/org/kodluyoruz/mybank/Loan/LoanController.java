@@ -24,7 +24,7 @@ public class LoanController {
                 .collect(Collectors.toList());
     }*/
 
-    @GetMapping(params = {"cardnumber", "page", "size"})
+    @GetMapping(value = "/showExtre", params = {"cardnumber", "page", "size"})
     public List<Loan> CheckExtre(@RequestParam("cardnumber") long cardnumber, @Min(value = 0) @RequestParam("page") int page, @RequestParam("size") int size) {
         return  loanService.findBulLoanList(cardnumber,PageRequest.of(page, size)).stream()
                 .collect(Collectors.toList());

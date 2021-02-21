@@ -24,11 +24,11 @@ public class CustomerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDto create(@Valid @RequestBody CustomerDto customerDto) {
-        Customer c = new Customer();
+
 
         return customerService.create(customerDto.toCustomer()).toCustomerDto();
     }
-    @GetMapping("/customer/{id}")
+    @GetMapping("/{id}")
     public CustomerDto get(@PathVariable("id") Long id) {
         return customerService.get(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id : " + id)).toCustomerDto();

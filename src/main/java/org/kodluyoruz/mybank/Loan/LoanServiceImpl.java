@@ -28,16 +28,11 @@ public class LoanServiceImpl implements LoanService{
     CreditCardRepository creditCardRepository;
    @Autowired
     BankCardRepository bankCardRepository;
-  @Autowired
+   @Autowired
     LoanRepository loanRepository;
-  @Autowired
+   @Autowired
     PrimaryAccountDao primaryAccountDao;
 
-    /*
-      public Page<Loan> list(long cardnumber, Pageable pageable) {
-        return loanRepository.findLoanList(cardnumber,pageable);
-
-      }*/
     @Override
   public List<Loan> findBulLoanList(long cardnumber, Pageable pageable) {
         CreditCard creditCard= creditCardRepository.findByNumber(cardnumber);
@@ -67,7 +62,7 @@ public class LoanServiceImpl implements LoanService{
             creditCardRepository.save(creditCard);
             Date date = new Date();
 
-            Loan  loan= new Loan(date, "CreditCard loan pay with Account",  "Finished",amount,(new BigDecimal(1000).subtract(creditCard.getCredicardLimit())), creditCard);
+            Loan  loan= new Loan(date, "BankCard loan pay with Account",  "Finished",amount,(new BigDecimal(1000).subtract(creditCard.getCredicardLimit())), creditCard);
 
             loanRepository.save(loan);
         }

@@ -43,8 +43,7 @@ public class Customer {
     @JoinColumn(name="saving_account_id", referencedColumnName = "Id")
     private SavingAccount savingAccount;
 
-
-     public CustomerDto toCustomerDto(){
+    public CustomerDto toCustomerDto(){
          return CustomerDto.builder().Id(this.Id).name(this.name).surname(this.surname).
                  build();
      }
