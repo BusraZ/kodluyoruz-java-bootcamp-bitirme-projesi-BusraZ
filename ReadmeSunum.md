@@ -26,4 +26,4 @@ Sistemimiz şu şekilde çalışıyor:
 
 
 
-![onlineBank](figures\onlineBank.PNG)
+![onlineBank](figures/onlineBank.PNG)
